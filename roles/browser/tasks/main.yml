@@ -1,0 +1,52 @@
+# 参考: https://zenn.dev/ciffelia/articles/wsl-xdg-open
+
+- tags: [browser]
+
+  block:
+
+    - name: ensure xdg-utils installed
+      package:
+        name: xdg-utils
+        state: present
+
+- tags: [browser]
+
+  become_user: '{{ restricted_user }}'
+
+  block:
+
+    - name: ensure application directory
+      file:
+        path: ~/.local/share/applications
+        state: directory
+
+    - name: create desktop file
+      copy:
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Version=1.0
+          Name=File Protocol Handler
+          NoDisplay=true
+          Exec=rundll32.exe url.dll,FileProtocolHandler
+          EOS
+        dest: ~/.local/share/applications/file-protocol-handler.desktop
+
+    - name: check update needed
+      command:
+        argv:
+          - xdg-settings
+          - check
+          - default-web-browser
+          - file-protocol-handler.desktop
+      register: browser_check
+      changed_when: false
+
+    - name: xdg-settings
+      when: browser_check.stdout is search('^no')
+      command:
+        argv:
+          - xdg-settings
+          - set
+          - default-web-browser
+          - file-protocol-handler.desktop

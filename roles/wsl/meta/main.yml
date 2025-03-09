@@ -3,6 +3,7 @@ dependencies:
   - docker
   - docker_conf
   - utils
+  - browser
   - directory
   - fonts
   - config
