@@ -76,3 +76,10 @@
       ansible.builtin.command:
         cmd: build-emacs
         creates: /usr/local/bin/emacs
+
+    - name: start Emacs for initial setup
+      become_user: '{{ restricted_user }}'
+      ansible.builtin.systemd:
+        scope: user
+        name: emacs
+        state: started

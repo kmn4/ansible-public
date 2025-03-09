@@ -5,5 +5,5 @@ dependencies:
   - utils
   - directory
   - fonts
-  - emacs
   - config
+  - emacs
