@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  name: wsl
+  become: true
+  gather_facts: true
+  module_defaults:
+    setup:
+      gather_subset:
+        - min
+  roles:
+    - wsl

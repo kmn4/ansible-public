@@ -1,0 +1,73 @@
+- tags: [utils]
+
+  block:
+
+    - name: remove utils
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: present
+      with_items: []
+
+    - name: install utils from distribution package repositories
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - aptitude
+        - build-essential
+        - cpanminus
+        - curl
+        - default-mysql-client
+        - git
+        - golang
+        - golang-docker-credential-helpers
+        - gnupg
+        - hugo
+        - jq
+        - libterm-readline-gnu-perl
+        - locales-all
+        - man-db
+        - nodejs
+        - openjdk-17-jdk
+        - parallel
+        - pass
+        - peco
+        - perl-doc
+        - python3-venv
+        - rlwrap
+        - rsync
+        - sqlite3
+        - sudo
+        - tcpdump
+        - termshark
+        - unzip
+        - vim
+        - x11-xkb-utils
+        - xxd
+
+    - name: go install
+      tags: [utils_go]
+      ansible.builtin.command:
+        argv:
+          - go
+          - install
+          - '{{ item.pkg }}'
+        creates: '/usr/local/bin/{{ item.bin }}'
+      environment:
+        GOBIN: /usr/local/bin
+      with_items:
+        - pkg: github.com/x-motemen/ghq@v1.5.0
+          bin: ghq
+
+    - name: create alias scripts
+      ansible.builtin.copy:
+        dest: '/usr/local/bin/{{ item.name }}'
+        owner: root
+        group: root
+        mode: '0755'
+        content: |
+          #!/usr/bin/bash
+          exec {{ item.def }} "$@"
+      with_items:
+        - name: mmdc
+          def: docker run --rm -u "$(id -u):$(id -g)" -v .:/data minlag/mermaid-cli

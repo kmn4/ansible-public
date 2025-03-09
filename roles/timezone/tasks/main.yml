@@ -1,0 +1,7 @@
+- tags: [timezone]
+
+  block:
+    - name: ensure timezone be Asia/Tokyo
+      community.general.timezone:
+        name: Asia/Tokyo
+      notify: restart_cron

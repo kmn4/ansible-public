@@ -1,0 +1,9 @@
+dependencies:
+  - timezone
+  - docker
+  - docker_conf
+  - utils
+  - directory
+  - fonts
+  - emacs
+  - config

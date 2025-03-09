@@ -1,0 +1,22 @@
+- tags: [config]
+
+  become: yes
+  become_user: '{{ restricted_user }}'
+
+  block:
+    - name: clone kmn4/.config
+      ansible.builtin.git:
+        repo: https://github.com/kmn4/.config.git
+        dest: ~/config
+        version: main
+
+    - name: symlink install.conf
+      ansible.builtin.file:
+        src: ~/config/install.conf.sample
+        dest: ~/config/install.conf
+        state: link
+
+    - name: install config
+      ansible.builtin.shell:
+        cmd: make install
+        chdir: ~/config

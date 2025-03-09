@@ -1,0 +1,79 @@
+- tags: [fonts]
+
+  block:
+
+    - name: ensure Noto installed
+      package:
+        name: fonts-noto
+        state: present
+
+- tags: [fonts]
+
+  vars:
+    hackgen_version: 2.10.0
+
+  become: yes
+  become_user: '{{ restricted_user }}'
+
+  block:
+
+    - name: ensure fonts directory
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0700' # why?
+      with_items:
+        - ~/.local/share/fonts
+
+    - name: check hackgen installed
+      shell: 'fc-list | grep -iq hackgen'
+      register: fonts_hackgen
+      changed_when: false
+      failed_when: false
+
+    - name: ensure hackgen installed
+      when: fonts_hackgen.rc != 0
+      block:
+
+        - name: create temp directory
+          tempfile:
+            state: directory
+          register: fonts_tempdir
+
+        - name: fetch hackgen
+          ansible.builtin.get_url:
+            url: 'https://github.com/yuru7/HackGen/releases/download/v{{ hackgen_version }}/HackGen_NF_v{{ hackgen_version }}.zip'
+            dest: '{{ fonts_tempdir.path }}/HackGen_NF_v{{ hackgen_version }}.zip'
+            mode: '0600'
+
+        - name: unzip hackgen
+          unarchive:
+            remote_src: true
+            src: '{{ fonts_tempdir.path }}/HackGen_NF_v{{ hackgen_version }}.zip'
+            dest: '{{ fonts_tempdir.path }}'
+
+        - name: copy hackgen to fonts directory
+          copy:
+            remote_src: true
+            src: '{{ fonts_tempdir.path }}/HackGen_NF_v{{ hackgen_version }}/{{ item }}.ttf'
+            dest: '~/.local/share/fonts/{{ item }}.ttf'
+            mode: 'u=rwX,g=rX,o=rX'
+          with_items:
+            - HackGenConsoleNF-Regular
+            - HackGenConsoleNF-Bold
+            - HackGen35ConsoleNF-Regular
+            - HackGen35ConsoleNF-Bold
+
+        - name: build fontconfig cache
+          command: fc-cache -f
+
+    - name: recheck hackgen installed
+      shell: 'fc-list | grep -iq hackgen'
+      register: fonts_hackgen
+      changed_when: false
+      failed_when: false
+
+    - name: assert hackgen installed
+      assert:
+        that:
+          - fonts_hackgen.rc == 0

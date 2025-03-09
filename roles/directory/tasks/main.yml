@@ -1,0 +1,18 @@
+- tags: [directory]
+
+  block:
+    - name: ensure standard directories exists
+      ansible.builtin.file:
+        path: '/home/{{ restricted_user }}/{{ item }}'
+        owner: '{{ restricted_user }}'
+        group: '{{ restricted_user }}'
+        mode: 0755
+        state: directory
+      with_items:
+        - .config
+        - .local
+        - .local/share
+        - .local/state
+        - .local/bin
+        - Documents
+        - Downloads

@@ -1,0 +1,67 @@
+- tags: [emacs]
+
+  block:
+    - name: install Emacs build dependencies
+      ansible.builtin.package:
+        name: '{{ (item is mapping) | ternary(item[ansible_distribution_release] | default(item["default"]), item) }}'
+        state: present
+      with_items:
+        - autoconf
+        - build-essential
+        - texinfo
+        - pkg-config
+        # apt-cache search -n 'libgnutls[0-9]+-dev'
+        - libgnutls28-dev
+        # gcc --version
+        # apt-cache search -n 'libgccjit[0-9]+-dev'
+        - bookworm: libgccjit-12-dev
+          jammy: libgccjit-11-dev
+        - libx11-dev
+        - libcairo2-dev
+        - libxaw7-dev
+        - libjpeg-dev
+        - libpng-dev
+        - libgif-dev
+        - libtiff-dev
+        - libncurses-dev
+        - libgtk-3-dev
+        - libwebkit2gtk-4.0-dev
+        - libjansson-dev
+        - libsystemd-dev
+        - librsvg2-dev
+        - libtree-sitter-dev
+
+    - name: install Emacs runtime dependencies
+      ansible.builtin.package:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - cmigemo
+        - emacs-mozc
+        - ripgrep
+        - cmake
+        - libtool-bin
+
+    - name: clone Emacs repository
+      ansible.builtin.git:
+        repo: https://github.com/emacs-mirror/emacs.git
+        dest: /usr/local/src/emacs
+        version: emacs-29.4
+
+    - name: install Emacs build command
+      ansible.builtin.copy:
+        dest: /usr/local/bin/build-emacs
+        mode: 0755
+        content: |
+          #!/bin/bash -xe
+          exec > /var/log/build-emacs.log 2>&1
+          cd /usr/local/src/emacs
+          ./autogen.sh
+          ./configure --with-cairo --with-json --with-native-compilation --with-xwidgets --with-tree-sitter
+          make -j8
+          make install
+
+    - name: build Emacs
+      ansible.builtin.command:
+        cmd: build-emacs
+        creates: /usr/local/bin/emacs
