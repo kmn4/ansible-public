@@ -83,3 +83,4 @@
         scope: user
         name: emacs
         state: started
+        no_block: true
