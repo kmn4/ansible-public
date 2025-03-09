@@ -9,6 +9,7 @@
         repo: https://github.com/kmn4/.config.git
         dest: ~/config
         version: main
+        update: false
 
     - name: symlink install.conf
       ansible.builtin.file:
