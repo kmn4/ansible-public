@@ -18,5 +18,10 @@ wsl -t Debian ; wsl -d Debian
 ```
 
 ``` shell
+cat roles/wsl/defaults/main.yml
+mkdir -p host_vars && echo '*' > host_vars/.gitignore && vim host_vars/localhost
+```
+
+``` shell
 { test -n "$become_pass" || read -sp 'sudo password: ' become_pass ; } && ( cd ~ && if [ ! -d ansible-public ] ; then git clone https://github.com/kmn4/ansible-public ; fi && cd ~/ansible-public && ansible-playbook wsl.yml -e "ansible_become_pass=$become_pass" -e "restricted_user=$(id -un)" -D ) && unset become_pass
 ```

@@ -1,0 +1,14 @@
+- tags: [copilot-language-server]
+
+  block:
+    - name: ensure npm installed
+      ansible.builtin.package:
+        name: npm
+        state: present
+
+    - name: ensure copilot-language-server installed
+      community.general.npm:
+        name: '@github/copilot-language-server'
+        global: true
+        state: present
+        production: true

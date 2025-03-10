@@ -7,4 +7,6 @@ dependencies:
   - directory
   - fonts
   - config
+  - name: copilot-language-server
+    when: use_copilot
   - emacs

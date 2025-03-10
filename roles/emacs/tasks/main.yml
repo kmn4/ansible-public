@@ -51,17 +51,6 @@
         - libz-dev
         - make
         - pkg-config
-        #-- for copilot.el
-        - npm
-
-    - name: install Emacs runtime dependencies (from npm)
-      community.general.npm:
-        name: '{{ item }}'
-        global: true
-        state: present
-        production: true
-      with_items:
-        - '@github/copilot-language-server'
 
     - name: clone Emacs repository
       ansible.builtin.git:
