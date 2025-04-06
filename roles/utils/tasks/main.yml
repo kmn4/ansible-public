@@ -5,7 +5,7 @@
     - name: remove utils
       ansible.builtin.apt:
         name: '{{ item }}'
-        state: present
+        state: absent
       with_items: []
 
     - name: install utils from distribution package repositories
@@ -22,7 +22,6 @@
         - golang
         - golang-docker-credential-helpers
         - gnupg
-        - hugo
         - jq
         - libterm-readline-gnu-perl
         - locales-all
@@ -44,6 +43,13 @@
         - vim
         - x11-xkb-utils
         - xxd
+
+    - name: fetch and install debian packages
+      ansible.builtin.apt:
+        deb: '{{ item }}'
+        state: present
+      with_items:
+        - https://github.com/gohugoio/hugo/releases/download/v0.145.0/hugo_extended_0.145.0_linux-amd64.deb
 
     - name: go install
       tags: [utils_go]
