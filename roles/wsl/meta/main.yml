@@ -10,3 +10,4 @@ dependencies:
   - name: copilot-language-server
     when: use_copilot
   - emacs
+  - rclone

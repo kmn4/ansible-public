@@ -1,0 +1,14 @@
+- tags: [rclone]
+
+  vars:
+    version: 1.69.1
+    arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
+
+  block:
+
+    - name: fetch and install rclone Debian package
+      ansible.builtin.apt:
+        deb: '{{ item }}'
+        state: present
+      with_items:
+        - https://github.com/rclone/rclone/releases/download/v1.69.1/rclone-v{{ version }}-linux-{{ arch }}.deb
