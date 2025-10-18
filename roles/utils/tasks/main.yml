@@ -77,3 +77,12 @@
       with_items:
         - name: mmdc
           def: docker run --rm -u "$(id -u):$(id -g)" -v .:/data minlag/mermaid-cli
+
+    - name: install with scripts
+      become: true
+      become_user: kamasaki
+      ansible.builtin.script:
+        cmd: '{{ role_path }}/files/install-{{ item.name }}'
+        creates: '/home/kamasaki/.local/bin/{{ item.name }}'
+      with_items:
+        - name: deno
