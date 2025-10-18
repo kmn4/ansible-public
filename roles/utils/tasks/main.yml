@@ -39,6 +39,7 @@
         - sudo
         - tcpdump
         - termshark
+        - uidmap
         - unzip
         - vim
         - x11-xkb-utils
