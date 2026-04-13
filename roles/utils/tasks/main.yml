@@ -26,6 +26,7 @@
         - libterm-readline-gnu-perl
         - locales-all
         - man-db
+        - ncdu
         - nodejs
         - openjdk-17-jdk
         - parallel
