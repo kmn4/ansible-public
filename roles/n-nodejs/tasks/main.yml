@@ -1,0 +1,24 @@
+- tags: [n-nodejs]
+
+  block:
+
+    - name: ensure any version of npm installed
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: present
+      with_items:
+        - npm
+
+    - name: ensure n installed
+      community.general.npm:
+        name: 'n'
+        global: true
+        state: present
+        production: true
+
+    - name: ensure recent LTS nodejs installed
+      ansible.builtin.command:
+        argv:
+          - n
+          - lts
+        creates: /usr/local/bin/node

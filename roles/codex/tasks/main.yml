@@ -1,0 +1,10 @@
+- tags: [codex]
+
+  block:
+
+    - name: ensure codex installed
+      community.general.npm:
+        name: '@openai/codex'
+        global: true
+        state: present
+        production: true
