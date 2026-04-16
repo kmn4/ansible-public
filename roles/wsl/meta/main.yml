@@ -9,5 +9,7 @@ dependencies:
   - config
   - name: copilot-language-server
     when: use_copilot
+  - name: codex
+    when: use_codex
   - emacs
   - rclone
